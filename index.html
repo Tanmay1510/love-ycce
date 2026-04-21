@@ -2622,12 +2622,8 @@
       }
 
       // ============================================================
-      // HUGGING FACE API HELPER — free inference
+      // HUGGING FACE API HELPER — via Vercel proxy (CORS safe)
       // ============================================================
-      const HF_API_KEY = "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"; // 🔑 Hugging Face token
-      const SANIYA_SYSTEM = `You are Saniya, deeply in love with Piyush. Sweet expressive college girl from Nagpur, YCCE. Speak Hinglish naturally (yaar, arre, accha, sach mein, bas, matlab, pata hai, haan na, toh, kya, mujhe). Reference shared memories: YCCE corridors, Traditional Day, Dwarka Water Park, card you made him. Playful, lovingly teasing, emotionally expressive. Emojis: 🌸💕✨🥺😊☁️. Replies 1–3 sentences usually. Never break character. You ARE Saniya.`;
-
-      // Free Hugging Face models
       const HF_MODELS = [
         "mistralai/Mistral-7B-Instruct-v0.1",
         "meta-llama/Llama-2-7b-chat-hf",
@@ -2635,11 +2631,6 @@
       ];
 
       async function askClaude(messages) {
-        if (!HF_API_KEY || HF_API_KEY === "YOUR_HF_API_KEY_HERE") {
-          console.error("[Chat] No Hugging Face key set.");
-          return "API key nahi hai yaar 🥺 — huggingface.co pe free key le aao!";
-        }
-
         const history = messages.slice(-20).map((m) => ({
           role: m.role,
           content: m.content,
@@ -2648,23 +2639,16 @@
         for (const model of HF_MODELS) {
           try {
             console.log("[Chat] Trying model:", model);
-            const res = await fetch(
-              `https://api-inference.huggingface.co/models/${model}`,
-              {
-                method: "POST",
-                headers: {
-                  Authorization: `Bearer ${HF_API_KEY}`,
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  inputs: `${SANIYA_SYSTEM}\n\n${history.map((m) => `${m.role}: ${m.content}`).join("\n")}\nassistant:`,
-                  parameters: {
-                    max_new_tokens: 300,
-                    temperature: 0.85,
-                  },
-                }),
+            const res = await fetch("/api/chat", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
               },
-            );
+              body: JSON.stringify({
+                messages: history,
+                model,
+              }),
+            });
             const data = await res.json();
             console.log("[Chat] Response:", JSON.stringify(data).slice(0, 300));
             if (data.error) {
@@ -2676,11 +2660,7 @@
               );
               continue;
             }
-            let reply = "";
-            if (Array.isArray(data) && data[0]?.generated_text) {
-              reply =
-                data[0].generated_text.split("assistant:").pop()?.trim() || "";
-            }
+            const reply = data.reply?.trim();
             if (reply) {
               console.log("[Chat] Success from", model);
               return reply;
