@@ -12,11 +12,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing messages or model" });
   }
 
-  const HF_API_KEY = process.env.HF_API_KEY;
-  if (!HF_API_KEY) {
-    return res
-      .status(500)
-      .json({ error: "HF_API_KEY not configured on server" });
+  // Get API key from environment variable (set in Vercel dashboard)
+  const HF_API_KEY =
+    process.env.HF_API_KEY || "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";
+
+  if (!HF_API_KEY || HF_API_KEY.startsWith("YOUR_")) {
+    console.error("[API] HF_API_KEY not configured or empty");
+    return res.status(500).json({
+      error:
+        "API key not configured. Please set HF_API_KEY in Vercel environment variables.",
+    });
   }
 
   const SANIYA_SYSTEM = `You are Saniya, deeply in love with Piyush. Sweet expressive college girl from Nagpur, YCCE. Speak Hinglish naturally (yaar, arre, accha, sach mein, bas, matlab, pata hai, haan na, toh, kya, mujhe). Reference shared memories: YCCE corridors, Traditional Day, Dwarka Water Park, card you made him. Playful, lovingly teasing, emotionally expressive. Emojis: 🌸💕✨🥺😊☁️. Replies 1–3 sentences usually. Never break character. You ARE Saniya.`;
