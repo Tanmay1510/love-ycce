@@ -1920,53 +1920,172 @@
         }
         .timeline-wrap {
           padding: 20px;
+          max-width: 100%;
         }
         .timeline-line {
-          left: 20px;
-          top: 30px;
+          left: 16px;
+          top: 20px;
+          bottom: 0;
         }
         .timeline-item {
           flex-direction: column;
-          padding-left: 80px;
-          margin-bottom: 50px;
+          margin-bottom: 40px;
+          position: relative;
+          padding-left: 70px;
           transform: none !important;
         }
         .timeline-item:nth-child(odd),
         .timeline-item:nth-child(even) {
           flex-direction: column;
           transform: none;
+          padding-left: 70px;
         }
         .timeline-node {
-          left: 20px;
-          top: 0;
+          position: absolute;
+          left: -8px;
+          top: -5px;
           transform: none;
-          width: 50px;
-          height: 50px;
-          font-size: 1.3rem;
+          width: 48px;
+          height: 48px;
+          font-size: 1.2rem;
+          flex-shrink: 0;
         }
         .timeline-card {
           width: 100%;
-          margin: 0;
+          margin: 0 !important;
           perspective: none;
+          margin-top: 10px;
         }
-        .timeline-item:nth-child(odd) .timeline-card {
-          margin-right: 0;
-        }
+        .timeline-item:nth-child(odd) .timeline-card,
         .timeline-item:nth-child(even) .timeline-card {
-          margin-left: 0;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+        .timeline-card-inner {
+          min-height: auto;
+          max-height: none;
+          transform: none !important;
+          position: static;
+        }
+        .timeline-card-front {
+          position: static;
+          inset: auto;
+          padding: 18px;
+          min-height: 120px;
+          display: block;
+        }
+        .timeline-card-back {
+          display: none;
         }
         .timeline-card:hover .timeline-card-inner {
           transform: none;
         }
-        .timeline-card-inner {
-          min-height: 140px;
-          transform: none !important;
+        .timeline-date {
+          font-size: 0.7rem;
+        }
+        .timeline-title {
+          font-size: 1rem;
+          margin-bottom: 6px;
+        }
+        .timeline-subtitle {
+          font-size: 0.9rem;
+          margin-bottom: 8px;
+        }
+        .timeline-desc {
+          font-size: 0.8rem;
+          line-height: 1.5;
+        }
+        /* Cute mobile touches */
+        .section-container {
+          padding: 16px;
+        }
+        .btn-primary,
+        .btn-secondary {
+          padding: 12px 18px;
+          font-size: 0.95rem;
+          width: 100%;
+          margin-bottom: 8px;
+          border-radius: 12px;
+          touch-action: manipulation;
         }
         .memories-grid {
           columns: 1;
+          gap: 12px;
+        }
+        .memory-card {
+          border-radius: 12px;
+          padding: 18px;
+          min-height: 140px;
+          cursor: pointer;
+          transition:
+            transform 0.2s,
+            box-shadow 0.2s;
+        }
+        .memory-card:active {
+          transform: scale(0.98);
+        }
+        .notes-grid {
+          gap: 12px;
+        }
+        .note-card {
+          border-radius: 12px;
+          min-height: 140px;
+        }
+        .promise-ring-wrap {
+          max-width: 100%;
+        }
+        .promise-list {
+          gap: 10px;
+        }
+        .promise-item {
+          padding: 12px;
+          border-radius: 10px;
+          font-size: 0.9rem;
+        }
+        .chat-container {
+          max-width: 100%;
+          padding: 12px;
+          height: calc(100vh - 150px);
+        }
+        .chat-messages {
+          height: calc(100vh - 280px);
+        }
+        .quick-replies {
+          flex-wrap: wrap;
+          gap: 6px;
+          padding: 8px;
+        }
+        .quick-replies button {
+          padding: 8px 12px;
+          font-size: 0.8rem;
+          border-radius: 16px;
+          flex: 1 1 calc(50% - 3px);
+          min-width: 80px;
+        }
+        .chat-textarea {
+          font-size: 0.95rem;
+          padding: 10px 12px;
+        }
+        .msg {
+          margin-bottom: 10px;
+        }
+        .emoji-picker {
+          bottom: 60px;
         }
         #love-meter {
           display: none;
+        }
+        #send-love-btn {
+          padding: 10px 16px;
+          font-size: 0.75rem;
+          bottom: 16px;
+          left: 16px;
+        }
+        #mute-btn {
+          padding: 10px 16px;
+          font-size: 0.75rem;
+          bottom: 16px;
+          right: 80px;
         }
       }
       @media (max-width: 480px) {
