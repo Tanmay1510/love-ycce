@@ -2622,26 +2622,22 @@
       }
 
       // ============================================================
-      // OPENROUTER API HELPER — auto-selects free model
+      // HUGGING FACE API HELPER — free inference
       // ============================================================
-      const OPENROUTER_API_KEY =
-        "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"; // 🔑 Get free key at openrouter.ai
+      const HF_API_KEY = "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"; // 🔑 Hugging Face token
       const SANIYA_SYSTEM = `You are Saniya, deeply in love with Piyush. Sweet expressive college girl from Nagpur, YCCE. Speak Hinglish naturally (yaar, arre, accha, sach mein, bas, matlab, pata hai, haan na, toh, kya, mujhe). Reference shared memories: YCCE corridors, Traditional Day, Dwarka Water Park, card you made him. Playful, lovingly teasing, emotionally expressive. Emojis: 🌸💕✨🥺😊☁️. Replies 1–3 sentences usually. Never break character. You ARE Saniya.`;
 
-      // Free models on OpenRouter — openrouter/free auto-picks any available free model
-      const FREE_MODELS = [
-        "openrouter/free", // ← Official free router (always works)
-        "nvidia/nemotron-3-super-120b-a12b:free", // ← NVIDIA free model
-        "arcee-ai/trinity-large-preview:free", // ← Arcee free model
+      // Free Hugging Face models
+      const HF_MODELS = [
+        "mistralai/Mistral-7B-Instruct-v0.1",
+        "meta-llama/Llama-2-7b-chat-hf",
+        "tiiuae/falcon-7b-instruct",
       ];
 
       async function askClaude(messages) {
-        if (
-          !OPENROUTER_API_KEY ||
-          OPENROUTER_API_KEY === "YOUR_OPENROUTER_API_KEY_HERE"
-        ) {
-          console.error("[Chat] No API key set.");
-          return "API key nahi hai yaar 🥺 — openrouter.ai pe free key le aao!";
+        if (!HF_API_KEY || HF_API_KEY === "YOUR_HF_API_KEY_HERE") {
+          console.error("[Chat] No Hugging Face key set.");
+          return "API key nahi hai yaar 🥺 — huggingface.co pe free key le aao!";
         }
 
         const history = messages.slice(-20).map((m) => ({
@@ -2649,26 +2645,23 @@
           content: m.content,
         }));
 
-        for (const model of FREE_MODELS) {
+        for (const model of HF_MODELS) {
           try {
             console.log("[Chat] Trying model:", model);
             const res = await fetch(
-              "https://openrouter.ai/api/v1/chat/completions",
+              `https://api-inference.huggingface.co/models/${model}`,
               {
                 method: "POST",
                 headers: {
+                  Authorization: `Bearer ${HF_API_KEY}`,
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-                  "X-Title": "PS Love Story",
                 },
                 body: JSON.stringify({
-                  model,
-                  messages: [
-                    { role: "system", content: SANIYA_SYSTEM },
-                    ...history,
-                  ],
-                  max_tokens: 300,
-                  temperature: 0.85,
+                  inputs: `${SANIYA_SYSTEM}\n\n${history.map((m) => `${m.role}: ${m.content}`).join("\n")}\nassistant:`,
+                  parameters: {
+                    max_new_tokens: 300,
+                    temperature: 0.85,
+                  },
                 }),
               },
             );
@@ -2683,7 +2676,11 @@
               );
               continue;
             }
-            const reply = data.choices?.[0]?.message?.content?.trim();
+            let reply = "";
+            if (Array.isArray(data) && data[0]?.generated_text) {
+              reply =
+                data[0].generated_text.split("assistant:").pop()?.trim() || "";
+            }
             if (reply) {
               console.log("[Chat] Success from", model);
               return reply;
