@@ -1918,25 +1918,49 @@
         .hamburger {
           display: block;
         }
-        .timeline-line {
-          left: 24px;
+        .timeline-wrap {
+          padding: 20px;
         }
-        .timeline-item,
+        .timeline-line {
+          left: 20px;
+          top: 30px;
+        }
+        .timeline-item {
+          flex-direction: column;
+          padding-left: 80px;
+          margin-bottom: 50px;
+          transform: none !important;
+        }
+        .timeline-item:nth-child(odd),
         .timeline-item:nth-child(even) {
           flex-direction: column;
-          padding-left: 60px;
-        }
-        .timeline-node {
-          left: 24px;
           transform: none;
         }
-        .timeline-card,
-        .timeline-item:nth-child(even) .timeline-card {
+        .timeline-node {
+          left: 20px;
+          top: 0;
+          transform: none;
+          width: 50px;
+          height: 50px;
+          font-size: 1.3rem;
+        }
+        .timeline-card {
           width: 100%;
           margin: 0;
+          perspective: none;
+        }
+        .timeline-item:nth-child(odd) .timeline-card {
+          margin-right: 0;
+        }
+        .timeline-item:nth-child(even) .timeline-card {
+          margin-left: 0;
+        }
+        .timeline-card:hover .timeline-card-inner {
+          transform: none;
         }
         .timeline-card-inner {
           min-height: 140px;
+          transform: none !important;
         }
         .memories-grid {
           columns: 1;
